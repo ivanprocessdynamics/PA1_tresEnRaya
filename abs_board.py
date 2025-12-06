@@ -15,7 +15,7 @@ def set_board_up(stones_per_player = ST_PLAYER):
     #Vamos a hacer una matriz donde NO_PLAYER = -1 significa casilla no jugada, 0 es cassilla
     #del jugador 0 y 1 es casilla del jugador 1
 
-    i, j = 0                                       #contador filas y columnas
+    i, j = 0,0                                       #contador filas y columnas
     board = []                                     #esto será la matriz
 
     while i < BSIZ:
@@ -127,6 +127,9 @@ def set_board_up(stones_per_player = ST_PLAYER):
         
         nonlocal selected_index             # La variable se debe actualizar para todas las funciones internas
 
+        if phase == 'placing':
+            return True                  # Si estamos en fase de placing devolveremos True directamente ya que no tenemos que seleccionar piedras
+
         # Miramos si las coordenadas que ha puesto están dentro del tablero
 
         if i < 0 or i >= BSIZ or j < 0 or j >= BSIZ:
@@ -161,4 +164,69 @@ def set_board_up(stones_per_player = ST_PLAYER):
         
         selected_index = k
         return True
+    def move_st(i,j):
+        nonlocal current_player, phase, stones_placed, selected_index
 
+        # Miramos si las coordenadas que ha puesto están dentro del tablero
+
+        if i < 0 or i >= BSIZ or j < 0 or j >= BSIZ:
+            return True, current_player, False
+
+        # Fase de placing
+        if phase == 'placing':
+
+            # Si la casilla está ocupada, no se puede colocar la piedra
+            if board[j][i] != NO_PLAYER:
+                return True, current_player, False
+
+            # Colocamos la piedra en el tablero
+            board[j][i] = current_player
+
+            # Añadimos la piedra a la lista de piedras
+            nueva_piedra = Stone(i, j, PLAYER_COLOR[current_player])
+            stones_list.append(nueva_piedra)
+
+            # Actualizamos el número de piedras colocadas por el jugador actual
+            stones_placed[current_player] += 1
+
+            # Comprobamos si se ha hecho 3 en raya
+            if end(current_player):
+                return False, current_player, True
+
+            # Comprobamos si se ha terminado la fase de placing
+            if stones_placed[0] == stones_per_player and stones_placed[1] == stones_per_player:
+                phase = 'moving'
+
+            # Cambiamos de jugador
+            current_player = 1 - current_player
+
+            return False, current_player, False
+
+        # Fase de moving
+        else:
+
+            # Si la casilla está ocupada, no se puede mover la piedra
+            if board[j][i] != NO_PLAYER:
+                return True, current_player, False
+
+            # Movemos la piedra en el tablero
+            piedra_seleccionada = stones_list[selected_index]
+            board[piedra_seleccionada.y][piedra_seleccionada.x] = NO_PLAYER
+            board[j][i] = current_player
+
+            # Actualizamos la posición de la piedra en la lista de piedras
+            stones_list[selected_index] = Stone(i, j, PLAYER_COLOR[current_player])
+
+            # Comprobamos si se ha hecho 3 en raya
+            if end(current_player):
+                return False, current_player, True
+
+            # Cambiamos de jugador
+            current_player = 1 - current_player
+
+            # Desseleccionamos la piedra
+            selected_index = None
+
+            return False, current_player, False
+
+    return stones, select_st, move_st, draw_txt
