@@ -1,7 +1,7 @@
 
 BSIZ = 3 # board side size
 
-ST_PLAYER = 4 # stones per player
+ST_PLAYER = (BSIZ**2 - 1)//2 # stones per player
 
 # Define the colors we will use in RGB format
 BLACK =   (  0,   0,   0)

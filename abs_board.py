@@ -164,6 +164,7 @@ def set_board_up(stones_per_player = ST_PLAYER):
         
         selected_index = k
         return True
+    
     def move_st(i,j):
         nonlocal current_player, phase, stones_placed, selected_index
 
@@ -193,14 +194,15 @@ def set_board_up(stones_per_player = ST_PLAYER):
             if end(current_player):
                 return False, current_player, True
 
-            # Comprobamos si se ha terminado la fase de placing
-            if stones_placed[0] == stones_per_player and stones_placed[1] == stones_per_player:
-                phase = 'moving'
-
             # Cambiamos de jugador
             current_player = 1 - current_player
 
-            return False, current_player, False
+            # Comprobamos si se ha terminado la fase de placing
+            if stones_placed[0] == stones_per_player and stones_placed[1] == stones_per_player:
+                phase = 'moving'
+                return False, current_player, False
+            if stones_placed[1] != stones_per_player:
+                return True, current_player, False
 
         # Fase de moving
         else:
