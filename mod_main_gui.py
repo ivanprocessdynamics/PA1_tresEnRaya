@@ -21,7 +21,7 @@ pygame.display.set_caption("Juegazo de Pol y Cezar")
 clock = pygame.time.Clock()
 
 # Import initialization of the separately programmed abstract board:
-from abs_board import set_board_up
+from mod_abs_board import set_board_up
 
 # Prepare board:
 # this will set up all stones as unplayed, select a first stone to play,
@@ -35,7 +35,7 @@ from abs_board import set_board_up
 #     returns: bool "stone still selected", next player (may be the same), 
 #     and bool "end of game"
 #   the call to draw_txt(end) prints a text-based version of the board
-stones, select_st, move_st, draw_txt = set_board_up()
+stones, select_st, move_st, draw_txt, must_move = set_board_up()
 
 # Grid:
 def trans_coord(x, y):
@@ -55,6 +55,17 @@ def draw_stone(screen, i, j, color):
         (ROOM + 0.5*SEP + (i + 0.5)*(SLOT + SEP), 0.5*SEP + (j + 0.5)*(SLOT + SEP)), 
         RAD)
 
+
+# Sirve para saber qué piedra debe moverse en la fase de moving                             #modificación
+def draw_hint(screen, i, j):            #modificación
+    # ponemos un aro negro un poco más grande que la piedra
+    pygame.draw.circle(
+        screen, BLACK,
+        (ROOM + 0.5*SEP + (i + 0.5)*(SLOT + SEP), 0.5*SEP + (j + 0.5)*(SLOT + SEP)),
+        int(RAD + 6), 4
+    )
+
+
 def draw_board(curr_player = 0, end = False):
     'on fresh screen, draw grid, stones, player turn mark, then make it appear'
     screen.fill(WHITE if not end else GRAY)
@@ -64,11 +75,18 @@ def draw_board(curr_player = 0, end = False):
     for s in stones():
         draw_stone(screen, *s)
     if not end:
+        pos = must_move()
+        if pos is not None:
+            draw_hint(screen, *pos)
+
+    if not end:
         'colored rectangle indicates who plays next'
         pygame.draw.rect(screen, PLAYER_COLOR[curr_player], 
         (ROOM + SEP, BSIZ*(SEP + SLOT) + SEP, BSIZ*(SEP + SLOT) - SEP, SLOT)
         )
     pygame.display.flip()
+
+
 
 # set_board_up() already selects a first stone; set curr_player to zero.
 stone_selected = True
