@@ -61,6 +61,7 @@ def set_board_up(stones_per_player = ST_PLAYER):
     def stones():
         return stones_list
 
+
     # Dibujar el tablero. Se puede hacer con dos while, yendo valor por valor comprobando si es igual a
     # -1, 0 o 1, y en función a eso imprimir ".". "X" o "O"
     def draw_txt(end = False):
@@ -189,6 +190,7 @@ def set_board_up(stones_per_player = ST_PLAYER):
 
         selected_index = k
         return True
+    
     
     def move_st(i,j):
         nonlocal current_player, phase, stones_placed, selected_index

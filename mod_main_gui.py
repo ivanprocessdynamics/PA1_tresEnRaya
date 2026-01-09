@@ -56,14 +56,7 @@ def draw_stone(screen, i, j, color):
         RAD)
 
 
-# Sirve para saber qué piedra debe moverse en la fase de moving                             #modificación
-def draw_hint(screen, i, j):            #modificación
-    # ponemos un aro negro un poco más grande que la piedra
-    pygame.draw.circle(
-        screen, BLACK,
-        (ROOM + 0.5*SEP + (i + 0.5)*(SLOT + SEP), 0.5*SEP + (j + 0.5)*(SLOT + SEP)),
-        int(RAD + 6), 4
-    )
+
 
 
 def draw_board(curr_player = 0, end = False):
@@ -74,10 +67,7 @@ def draw_board(curr_player = 0, end = False):
             draw_square(screen, i, j)
     for s in stones():
         draw_stone(screen, *s)
-    if not end:
-        pos = must_move()
-        if pos is not None:
-            draw_hint(screen, *pos)
+
 
     if not end:
         'colored rectangle indicates who plays next'
