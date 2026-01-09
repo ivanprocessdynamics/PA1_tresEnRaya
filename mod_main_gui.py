@@ -57,8 +57,6 @@ def draw_stone(screen, i, j, color):
 
 
 
-
-
 def draw_board(curr_player = 0, end = False):
     'on fresh screen, draw grid, stones, player turn mark, then make it appear'
     screen.fill(WHITE if not end else GRAY)
@@ -82,8 +80,18 @@ def draw_board(curr_player = 0, end = False):
 stone_selected = True
 curr_player = 0
 
+def auto_select_if_needed():
+    global stone_selected
+    pos = must_move()           # devuelve (x,y) si toca seleccionar piedra (moving)
+    if pos is not None:
+        i, j = pos
+        stone_selected = select_st(i, j)   # selecciona la única posible
+
+
 # Show grid and stones:
 draw_board()
+
+auto_select_if_needed()
 
 # Loop until the user clicks the close button.
 done = False
@@ -107,10 +115,8 @@ while not done:
             if stone_selected:
                 "User should click on a free destination square, otherwise ignore event"
                 stone_selected, curr_player, end = move_st(*trans_coord(*event.pos))
+                auto_select_if_needed()
                 draw_board(curr_player, end)
-            else:
-                "User should click on a stone to select it"
-                stone_selected = select_st(*trans_coord(*event.pos))
-
+            
 # Friendly finish-up:
 pygame.quit()
